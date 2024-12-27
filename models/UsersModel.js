@@ -1,5 +1,5 @@
-const connection = require('DatabaseConnection');
-
+const connection = require('../models/DatabaseConnection');
+//TODO: Walidacja
 const registerNewUser = (user) => {
   return new Promise((resolve, reject) => {
     const addUserQuery = 'INSERT INTO users (login, password, email, role) VALUES (?, ?, ?, ?)';
@@ -22,4 +22,8 @@ const registerNewUser = (user) => {
       }
     });
   });
+};
+
+module.exports = {
+  registerNewUser
 };

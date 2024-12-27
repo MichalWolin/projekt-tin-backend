@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const { registerNewUserHandler } = require('../controllers/UsersController');
+const cors = require('cors');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.use(cors());
+
+router.post('/', registerNewUserHandler);
 
 module.exports = router;
