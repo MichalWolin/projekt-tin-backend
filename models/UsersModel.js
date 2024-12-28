@@ -24,6 +24,19 @@ const registerNewUser = (user) => {
   });
 };
 
+const checkCredentials = (credentials) => {
+  return new Promise((resolve, reject) => {
+    const checkCredentialsQuery = 'SELECT * FROM users WHERE login = ? AND password = ?';
+    connection.query(checkCredentialsQuery, [credentials.login, credentials.password], (err, result) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(result);
+    });
+  });
+};
+
 module.exports = {
-  registerNewUser
+  registerNewUser,
+  checkCredentials
 };
