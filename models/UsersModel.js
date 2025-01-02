@@ -10,8 +10,8 @@ const registerNewUser = (user) => {
       
       if (user.role === 'player') {
         const userId = result.insertId;
-        const addPlayerQuery = 'INSERT INTO players (id, name, surname, birthdate) VALUES (?, ?, ?, ?)';
-        connection.query(addPlayerQuery, [userId, user.name, user.surname, user.birthdate], (err, result) => {
+        const addPlayerQuery = 'INSERT INTO players (id, name, surname, birthdate, gender) VALUES (?, ?, ?, ?, ?)';
+        connection.query(addPlayerQuery, [userId, user.name, user.surname, user.birthdate, user.gender], (err, result) => {
           if (err) {
             reject(err);
           }
