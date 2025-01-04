@@ -37,7 +37,40 @@ const checkCredentials = (credentials) => {
   });
 };
 
+const getUserById = (id) => {
+  return new Promise((resolve, reject) => {
+    const getUserByIdQuery = 'SELECT * FROM users LEFT JOIN players ON users.id = players.id WHERE users.id = ?';
+    connection.query(getUserByIdQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
+const updateUserData = (id, data) => {
+  return new Promise((resolve, reject) => {
+    const updateUserDataQuery = 'UPDATE users SET email = ? WHERE id = ?';
+    connection.query(updateUserDataQuery, [data.email, id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      
+      const updatePlayerDataQuery = 'UPDATE players SET name = ?, surname = ?, birthdate = ? WHERE id = ?';
+      connection.query(updatePlayerDataQuery, [data.name, data.surname, data.birthdate, id], (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(result);
+      });
+    });
+  });
+};
+
 module.exports = {
   registerNewUser,
-  checkCredentials
+  checkCredentials,
+  getUserById,
+  updateUserData
 };
