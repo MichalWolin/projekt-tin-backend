@@ -68,9 +68,55 @@ const updateUserData = (id, data) => {
   });
 };
 
+const checkCredentialsById = (id, password) => {
+  return new Promise((resolve, reject) => {
+    const checkCredentialsByIdQuery = 'SELECT * FROM users WHERE id = ? AND password = ?';
+    connection.query(checkCredentialsByIdQuery, [id, password], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
+const updatePassword = (id, password) => {
+  return new Promise((resolve, reject) => {
+    const updatePasswordQuery = 'UPDATE users SET password = ? WHERE id = ?';
+    connection.query(updatePasswordQuery, [password, id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
+const deleteUser = (id) => {
+  return new Promise((resolve, reject) => {
+    const deletePlayerQuery = 'DELETE FROM players WHERE id = ?';
+    connection.query(deletePlayerQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      
+      const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+      connection.query(deleteUserQuery, [id], (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(result);
+      });
+    });
+  });
+};
+
 module.exports = {
   registerNewUser,
   checkCredentials,
   getUserById,
-  updateUserData
+  updateUserData,
+  checkCredentialsById,
+  updatePassword,
+  deleteUser
 };
