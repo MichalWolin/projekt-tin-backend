@@ -84,10 +84,23 @@ const updateTournament = (id, data) => {
   });
 };
 
+const getTournamentManagerById = (id) => {
+  const getTournamentManagerByIdQuery = 'SELECT manager_id FROM tournaments WHERE id = ?';
+  return new Promise((resolve, reject) => {
+    connection.query(getTournamentManagerByIdQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
 module.exports = {
   getTournaments,
   addTournament,
   removeTournament,
   getTournamentById,
-  updateTournament
+  updateTournament,
+  getTournamentManagerById
 };

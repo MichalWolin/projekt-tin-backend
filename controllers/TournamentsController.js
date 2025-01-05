@@ -3,7 +3,8 @@ const {
   addTournament,
   removeTournament,
   getTournamentById,
-  updateTournament
+  updateTournament,
+  getTournamentManagerById
 } = require('../models/TournamentsModel');
 
 const getTournamentsHandler = async (req, res) => {
@@ -63,10 +64,26 @@ const updateTournamentHandler = async (req, res) => {
   }
 };
 
+const getTournamentManagerByIdHandler = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await getTournamentManagerById(id);
+    if (data.length === 0) {
+      res.status(404).json({ error: 'Tournament not found.' });
+      return;
+    } else {
+      res.status(200).json(data[0]);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getTournamentsHandler,
   addTournamentHandler,
   removeTournamentHandler,
   getTournamentByIdHandler,
-  updateTournamentHandler
+  updateTournamentHandler,
+  getTournamentManagerByIdHandler
 };

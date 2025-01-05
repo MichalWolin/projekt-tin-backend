@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var playersRouter = require('./routes/players');
 var tournamentsRouter = require('./routes/tournaments');
+var matchesRouter = require('./routes/matches');
 
 var app = express();
 //TODO: Napisac w dokumentacji o cors
@@ -28,6 +29,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/players', playersRouter);
 app.use('/tournaments', tournamentsRouter);
+app.use('/matches', matchesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
