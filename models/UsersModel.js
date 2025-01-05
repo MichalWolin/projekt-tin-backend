@@ -93,6 +93,7 @@ const updatePassword = (id, password) => {
 };
 
 const deleteUser = (id) => {
+  //TODO: Nalezy usuwac powiazane turnieje przed usunieciem uzytkownika
   return new Promise((resolve, reject) => {
     const deletePlayerQuery = 'DELETE FROM players WHERE id = ?';
     connection.query(deletePlayerQuery, [id], (error, result) => {

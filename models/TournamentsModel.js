@@ -60,8 +60,34 @@ const removeTournament = (id) => {
   });
 };
 
+const getTournamentById = (id) => {
+  const getTournamentByIdQuery = 'SELECT * FROM tournaments WHERE id = ?';
+  return new Promise((resolve, reject) => {
+    connection.query(getTournamentByIdQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
+const updateTournament = (id, data) => {
+  return new Promise((resolve, reject) => {
+    const updateTournamentQuery = 'UPDATE tournaments SET name = ?, start_date = ?, end_date = ?, gender = ? WHERE id = ?';
+    connection.query(updateTournamentQuery, [data.name, data.start_date, data.end_date, data.gender, id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
 module.exports = {
   getTournaments,
   addTournament,
-  removeTournament
+  removeTournament,
+  getTournamentById,
+  updateTournament
 };

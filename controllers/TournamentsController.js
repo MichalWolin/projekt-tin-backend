@@ -1,4 +1,10 @@
-const { getTournaments, addTournament, removeTournament } = require('../models/TournamentsModel');
+const {
+  getTournaments,
+  addTournament,
+  removeTournament,
+  getTournamentById,
+  updateTournament
+} = require('../models/TournamentsModel');
 
 const getTournamentsHandler = async (req, res) => {
   try {
@@ -31,8 +37,36 @@ const removeTournamentHandler = async (req, res) => {
   }
 };
 
+const getTournamentByIdHandler = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await getTournamentById(id);
+    if (data.length === 0) {
+      res.status(404).json({ error: 'Tournament not found.' });
+      return;
+    } else {
+      res.status(200).json(data[0]);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updateTournamentHandler = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = req.body;
+    await updateTournament(id, data);
+    res.status(200).json({ id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getTournamentsHandler,
   addTournamentHandler,
-  removeTournamentHandler
+  removeTournamentHandler,
+  getTournamentByIdHandler,
+  updateTournamentHandler
 };
