@@ -40,7 +40,28 @@ const addTournament = (data) => {
   });
 };
 
+const removeTournament = (id) => {
+  return new Promise((resolve, reject) => {
+    //Pytania: Czy powinienem sprawdzać czy turniej istnieje?
+    const removeTournamentsMatchesQuery = 'DELETE FROM matches WHERE tournament_id = ?';
+    connection.query(removeTournamentsMatchesQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+
+      const removeTournamentQuery = 'DELETE FROM tournaments WHERE id = ?';
+      connection.query(removeTournamentQuery, [id], (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(result);
+      });
+    });
+  });
+};
+
 module.exports = {
   getTournaments,
-  addTournament
+  addTournament,
+  removeTournament
 };

@@ -1,4 +1,4 @@
-const { getTournaments, addTournament } = require('../models/TournamentsModel');
+const { getTournaments, addTournament, removeTournament } = require('../models/TournamentsModel');
 
 const getTournamentsHandler = async (req, res) => {
   try {
@@ -21,7 +21,18 @@ const addTournamentHandler = async (req, res) => {
   }
 };
 
+const removeTournamentHandler = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await removeTournament(id);
+    res.status(200).json({ id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getTournamentsHandler,
-  addTournamentHandler
+  addTournamentHandler,
+  removeTournamentHandler
 };
