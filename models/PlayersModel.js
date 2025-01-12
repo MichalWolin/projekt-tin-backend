@@ -12,6 +12,19 @@ const getPlayerById = (id) => {
   });
 };
 
+const getEligiblePlayers = (id) => {
+  return new Promise((resolve, reject) => {
+    const getEligiblePlayersQuery = `SELECT * FROM players WHERE gender = (SELECT gender FROM tournaments WHERE id = ?)`;
+    connection.query(getEligiblePlayersQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
 module.exports = {
-  getPlayerById
+  getPlayerById,
+  getEligiblePlayers
 };

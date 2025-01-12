@@ -1,4 +1,7 @@
-const { getPlayerById } = require('../models/PlayersModel');
+const {
+  getPlayerById,
+  getEligiblePlayers
+} = require('../models/PlayersModel');
 
 const getPlayerByIdHandler = async (req, res) => {
   try {
@@ -14,6 +17,17 @@ const getPlayerByIdHandler = async (req, res) => {
   }
 };
 
+const getEligiblePlayersHandler = async (req, res) => {
+  try {
+    const tournamentId = req.params.id;
+    const players = await getEligiblePlayers(tournamentId);
+    res.status(200).json({ players });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
-  getPlayerByIdHandler
+  getPlayerByIdHandler,
+  getEligiblePlayersHandler
 };

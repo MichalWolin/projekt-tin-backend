@@ -1,7 +1,6 @@
 const connection = require('../models/DatabaseConnection');
 //TODO: Walidacja
 const registerNewUser = (user) => {
-  //Pytania: Czy to powinno byc jako transakcja czy moge sobie darowac?
   return new Promise((resolve, reject) => {
     const addUserQuery = 'INSERT INTO users (login, password, email, role) VALUES (?, ?, ?, ?)';
     connection.query(addUserQuery, [user.login, user.password, user.email, user.role], (error, result) => {
