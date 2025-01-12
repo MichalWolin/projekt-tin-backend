@@ -27,7 +27,7 @@ const getMatchesHandler = async (req, res) => {
 
 const addMatchHandler = async (req, res) => {
   try {
-    const { player_1_id, player_2_id, date } = req.body;
+    const { player_1_id, player_2_id, date, manager_id } = req.body;
     const tournamentId = req.params.id;
 
     if (!player_1_id || !player_2_id || !date) {
@@ -63,6 +63,11 @@ const addMatchHandler = async (req, res) => {
 
     if (new Date(date) < new Date(tournament[0].start_date) || new Date(date) > new Date(tournament[0].end_date)) {
       res.status(400).json({ error: 'Match date is not within tournament dates.' });
+      return;
+    }
+
+    if (tournament[0].manager_id !== manager_id) {
+      res.status(403).json({ error: 'You are not the manager of this tournament.' });
       return;
     }
 
