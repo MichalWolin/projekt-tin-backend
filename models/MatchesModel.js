@@ -47,7 +47,51 @@ const addMatch = (match, tournamentId) => {
   });
 };
 
+const removeMatch = (matchId) => {
+  return new Promise((resolve, reject) => {
+    const removeMatchQuery = `DELETE FROM matches WHERE id = ?`;
+    connection.query(removeMatchQuery, [matchId], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
+const getMatchById = (matchId) => {
+  return new Promise((resolve, reject) => {
+    const getMatchByIdQuery =
+    `SELECT m.*, t.manager_id AS tournament_manager_id
+    FROM matches m
+    INNER JOIN tournaments t ON m.tournament_id = t.id
+    WHERE m.id = ?`;
+
+    connection.query(getMatchByIdQuery, [matchId], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
+const updateMatch = (matchId, data) => {
+  return new Promise((resolve, reject) => {
+    const updateMatchQuery = `UPDATE matches SET player_1_id = ?, player_2_id = ?, date = ?, set1 = ?, set2 = ?, set3 = ? WHERE id = ?`;
+    connection.query(updateMatchQuery, [data.player_1_id, data.player_2_id, data.date, data.set1, data.set2, data.set3, matchId], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
 module.exports = {
   getMatches,
-  addMatch
+  addMatch,
+  removeMatch,
+  getMatchById,
+  updateMatch
 };

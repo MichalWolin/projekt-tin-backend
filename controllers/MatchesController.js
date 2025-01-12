@@ -1,6 +1,9 @@
 const {
 	getMatches,
-	addMatch
+	addMatch,
+  removeMatch,
+  getMatchById,
+  updateMatch
 } = require('../models/MatchesModel');
 
 const getMatchesHandler = async (req, res) => {
@@ -25,7 +28,41 @@ const addMatchHandler = async (req, res) => {
   }
 };
 
+const removeMatchHandler = async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const data = await removeMatch(matchId);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getMatchByIdHandler = async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const data = await getMatchById(matchId);
+    res.status(200).json(data[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updateMatchHandler = async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const data = req.body;
+    await updateMatch(matchId, data);
+    res.status(200).json({ data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
 	getMatchesHandler,
-  addMatchHandler
+  addMatchHandler,
+  removeMatchHandler,
+  getMatchByIdHandler,
+  updateMatchHandler
 };
