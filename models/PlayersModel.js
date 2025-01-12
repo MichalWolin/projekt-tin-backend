@@ -24,7 +24,20 @@ const getEligiblePlayers = (id) => {
   });
 };
 
+const doesPlayerExist = (id) => {
+  return new Promise((resolve, reject) => {
+    const doesPlayerExistQuery = 'SELECT * FROM players WHERE id = ?';
+    connection.query(doesPlayerExistQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
+
 module.exports = {
   getPlayerById,
-  getEligiblePlayers
+  getEligiblePlayers,
+  doesPlayerExist
 };

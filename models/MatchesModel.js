@@ -35,10 +35,10 @@ const getMatches = (page, tournamentId) => {
   });
 };
 
-const addMatch = (match, tournamentId) => {
+const addMatch = (player_1_id, player_2_id, tournamentId, date) => {
   return new Promise((resolve, reject) => {
     const addMatchQuery = `INSERT INTO matches (player_1_id, player_2_id, tournament_id, date) VALUES (?, ?, ?, ?)`;
-    connection.query(addMatchQuery, [match.player_1_id, match.player_2_id, tournamentId, match.date], (error, result) => {
+    connection.query(addMatchQuery, [player_1_id, player_2_id, tournamentId, date], (error, result) => {
       if (error) {
         reject(error);
       }

@@ -20,6 +20,12 @@ const getPlayerByIdHandler = async (req, res) => {
 const getEligiblePlayersHandler = async (req, res) => {
   try {
     const tournamentId = req.params.id;
+
+    if (isNaN(tournamentId) || tournamentId < 1) {
+      res.status(400).json({ error: 'Invalid ID.' });
+      return;
+    }
+
     const players = await getEligiblePlayers(tournamentId);
     res.status(200).json({ players });
   } catch (error) {
