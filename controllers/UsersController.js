@@ -5,14 +5,109 @@ const {
   updateUserData,
   checkCredentialsById,
   updatePassword,
-  deleteUser
+  deleteUser,
+  doesLoginExist
 } = require('../models/UsersModel');
 
 const registerNewUserHandler = async (req, res) => {
   try {
-    const user = req.body;
-    await registerNewUser(user);
-    res.status(201).json({ user });
+    const { login, password, repeatPassword, email, role, name, surname, birthdate, gender } = req.body;
+
+    if (!login || !password || !repeatPassword || !email || !role) {
+      res.status(400).json({ error: 'All fields are required.' });
+      return;
+    }
+
+    if (await doesLoginExist(login) > 0) {
+      res.status(400).json({ error: 'Login already exists.' });
+      return;
+    }
+
+    if (login.length < 3 || login.length > 255) {
+      res.status(400).json({ error: 'Login must be between 3 and 255 characters long.' });
+      return;
+    }
+
+    if (/\s/.test(login)) {
+      res.status(400).json({ error: 'Login cannot contain spaces.' });
+      return;
+    }
+
+    if (password.length < 8) {
+      res.status(400).json({ error: 'Password must be at least 8 characters long.' });
+      return;
+    }
+
+    if (/\s/.test(password)) {
+      res.status(400).json({ error: 'Password cannot contain spaces.' });
+      return;
+    }
+
+    if (!/\d/.test(password)) {
+      res.status(400).json({ error: 'Password must contain a digit.' });
+      return;
+    }
+
+    if (!/[!@#$%]/.test(password)) {
+      res.status(400).json({ error: 'Password must contain a special character (!, @, #, $, %).' });
+      return;
+    }
+
+    if (password !== repeatPassword) {
+      res.status(400).json({ error: 'Passwords do not match.' });
+      return;
+    }
+
+    if (!/^[a-zA-Z]+@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)) {
+      res.status(400).json({ error: 'Email is invalid.' });
+      return;
+    }
+
+    if (role === 'player') {
+      if (!name || !surname || !birthdate || !gender) {
+        res.status(400).json({ error: 'All fields are required.' });
+        return;
+      }
+
+      if (gender !== "male" && gender !== "female") {
+        res.status(400).json({ error: 'Gender must be either male or female.' });
+      }
+
+      if (name.length < 3 || name.length > 255) {
+        res.status(400).json({ error: 'Name must be between 3 and 255 characters long.' });
+        return;
+      }
+
+      if (/\s/.test(name)) {
+        res.status(400).json({ error: 'Name cannot contain spaces.' });
+        return;
+      }
+
+      if (surname.length < 3 || surname.length > 255) {
+        res.status(400).json({ error: 'Surname must be between 3 and 255 characters long.' });
+        return;
+      }
+
+      if (/\s/.test(surname)) {
+        res.status(400).json({ error: 'Surname cannot contain spaces.' });
+        return;
+      }
+
+      const birthdateObj = new Date(birthdate);
+
+      if (birthdateObj > new Date()) {
+        res.status(400).json({ error: 'Birthdate cannot be in the future.' });
+        return;
+      }
+
+      if (new Date() - birthdateObj < 24 * 60 * 60 * 1000 * 365 * 16) {
+        res.status(400).json({ error: 'You must be at least 16 years old to register.' });
+        return;
+      }
+    }
+
+    await registerNewUser(login, password, email, role, name, surname, birthdate, gender);
+    res.status(201).json({ message: 'User registered.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

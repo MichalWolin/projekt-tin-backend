@@ -1,17 +1,17 @@
 const connection = require('../models/DatabaseConnection');
 
-const registerNewUser = (user) => {
+const registerNewUser = (login, password, email, role, name, surname, birthdate, gender) => {
   return new Promise((resolve, reject) => {
     const addUserQuery = 'INSERT INTO users (login, password, email, role) VALUES (?, ?, ?, ?)';
-    connection.query(addUserQuery, [user.login, user.password, user.email, user.role], (error, result) => {
+    connection.query(addUserQuery, [login, password, email, role], (error, result) => {
       if (error) {
         reject(error);
       }
       
-      if (user.role === 'player') {
+      if (role === 'player') {
         const userId = result.insertId;
         const addPlayerQuery = 'INSERT INTO players (id, name, surname, birthdate, gender, points) VALUES (?, ?, ?, ?, ?, ?)';
-        connection.query(addPlayerQuery, [userId, user.name, user.surname, user.birthdate, user.gender, 0], (error, result) => {
+        connection.query(addPlayerQuery, [userId, name, surname, birthdate, gender, 0], (error, result) => {
           if (error) {
             reject(error);
           }
@@ -137,6 +137,18 @@ const doesManagerExist = (id) => {
   });
 };
 
+const doesLoginExist = (login) => {
+  const doesLoginExistQuery = 'SELECT * FROM users WHERE login = ?';
+  return new Promise((resolve, reject) => {
+    connection.query(doesLoginExistQuery, [login], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result.length);
+    });
+  });
+};
+
 module.exports = {
   registerNewUser,
   checkCredentials,
@@ -145,5 +157,6 @@ module.exports = {
   checkCredentialsById,
   updatePassword,
   deleteUser,
-  doesManagerExist
+  doesManagerExist,
+  doesLoginExist
 };
