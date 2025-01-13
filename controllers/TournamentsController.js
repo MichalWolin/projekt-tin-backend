@@ -7,6 +7,10 @@ const {
   getTournamentManagerById
 } = require('../models/TournamentsModel');
 
+const {
+  doesManagerExist
+} = require('../models/UsersModel');
+
 const getTournamentsHandler = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -19,9 +23,57 @@ const getTournamentsHandler = async (req, res) => {
 
 const addTournamentHandler = async (req, res) => {
   try {
-    const data = req.body;
-    await addTournament(data);
-    res.status(201).json({ data });
+    const { tournament_name, start_date, end_date, manager_id, gender } = req.body;
+    if (!tournament_name || !start_date || !end_date || !manager_id || !gender) {
+      res.status(400).json({ error: 'All fields are required.' });
+      return;
+    }
+
+    if (tournament_name.length < 3 || tournament_name.length > 255) {
+      res.status(400).json({ error: 'Name must be between 3 and 255 characters.' });
+      return;
+    }
+
+    const startDateObj = new Date(start_date);
+    const endDateObj = new Date(end_date);
+
+    if (startDateObj < new Date()) {
+      res.status(400).json({ error: 'Start date must be in the future.' });
+      return;
+    }
+
+    if (startDateObj > endDateObj) {
+      res.status(400).json({ error: 'End date must be after start date.' });
+      return;
+    }
+
+    if (endDateObj - startDateObj < 24 * 60 * 60 * 1000) {
+      res.status(400).json({ error: 'Tournament must last at least 1 day.' });
+      return;
+    }
+
+    if (endDateObj - startDateObj > 24 * 60 * 60 * 1000 * 14) {
+      res.status(400).json({ error: 'Tournament must last at most 14 days.' });
+      return;
+    }
+
+    if (gender !== "male" && gender !== "female") {
+      res.status(400).json({ error: 'Gender must be either male or female.' });
+    }
+
+    if (isNaN(manager_id) || manager_id < 1) {
+      res.status(400).json({ error: 'Invalid manager ID.' });
+      return;
+    }
+
+    const manager = await doesManagerExist(manager_id);
+    if (manager.length === 0) {
+      res.status(400).json({ error: 'Manager does not exist.' });
+      return;
+    }
+
+    const data = await addTournament(tournament_name, start_date, end_date, manager_id, gender);
+    res.status(201).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,5 +1,5 @@
 const connection = require('../models/DatabaseConnection');
-//TODO: Walidacja
+
 const registerNewUser = (user) => {
   return new Promise((resolve, reject) => {
     const addUserQuery = 'INSERT INTO users (login, password, email, role) VALUES (?, ?, ?, ?)';
@@ -111,6 +111,18 @@ const deleteUser = (id) => {
   });
 };
 
+const doesManagerExist = (id) => {
+  const doesManagerExistQuery = 'SELECT * FROM users WHERE id = ? AND role = "manager"';
+  return new Promise((resolve, reject) => {
+    connection.query(doesManagerExistQuery, [id], (error, result) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(result.length);
+    });
+  });
+};
+
 module.exports = {
   registerNewUser,
   checkCredentials,
@@ -118,5 +130,6 @@ module.exports = {
   updateUserData,
   checkCredentialsById,
   updatePassword,
-  deleteUser
+  deleteUser,
+  doesManagerExist
 };

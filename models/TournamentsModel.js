@@ -27,11 +27,10 @@ const getTournaments = (page) => {
   });
 };
 
-const addTournament = (data) => {
-  //TODO: trzeba sprawdzic czy manager istnieje
+const addTournament = (tournament_name, start_date, end_date, manager_id, gender) => {
   return new Promise((resolve, reject) => {
     const addTournamentQuery = 'INSERT INTO tournaments (name, start_date, end_date, manager_id, gender) VALUES (?, ?, ?, ?, ?)';
-    connection.query(addTournamentQuery, [data.name, data.start_date, data.end_date, data.manager_id, data.gender], (error, result) => {
+    connection.query(addTournamentQuery, [tournament_name, start_date, end_date, manager_id, gender], (error, result) => {
       if (error) {
         reject(error);
       }
