@@ -76,10 +76,10 @@ const getMatchById = (matchId) => {
   });
 };
 
-const updateMatch = (matchId, data) => {
+const updateMatch = (matchId, player_1_id, player_2_id, date, set1, set2, set3) => {
   return new Promise((resolve, reject) => {
     const updateMatchQuery = `UPDATE matches SET player_1_id = ?, player_2_id = ?, date = ?, set1 = ?, set2 = ?, set3 = ? WHERE id = ?`;
-    connection.query(updateMatchQuery, [data.player_1_id, data.player_2_id, data.date, data.set1, data.set2, data.set3, matchId], (error, result) => {
+    connection.query(updateMatchQuery, [player_1_id, player_2_id, date, set1, set2, set3, matchId], (error, result) => {
       if (error) {
         reject(error);
       }

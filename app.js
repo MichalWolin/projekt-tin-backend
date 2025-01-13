@@ -12,7 +12,7 @@ var tournamentsRouter = require('./routes/tournaments');
 var matchesRouter = require('./routes/matches');
 
 var app = express();
-//TODO: Napisac w dokumentacji o cors
+
 app.use(cors());
 
 // view engine setup
