@@ -71,10 +71,10 @@ const getTournamentById = (id) => {
   });
 };
 
-const updateTournament = (id, data) => {
+const updateTournament = (id, name, start_date, end_date) => {
   return new Promise((resolve, reject) => {
-    const updateTournamentQuery = 'UPDATE tournaments SET name = ?, start_date = ?, end_date = ?, gender = ? WHERE id = ?';
-    connection.query(updateTournamentQuery, [data.name, data.start_date, data.end_date, data.gender, id], (error, result) => {
+    const updateTournamentQuery = 'UPDATE tournaments SET name = ?, start_date = ?, end_date = ? WHERE id = ?';
+    connection.query(updateTournamentQuery, [name, start_date, end_date, id], (error, result) => {
       if (error) {
         reject(error);
       }
