@@ -35,11 +35,12 @@ const checkCredentialsHandler = async (req, res) => {
 const getUserByIdHandler = async (req, res) => {
   try {
     const id = req.params.id;
+
     const user = await getUserById(id);
     if (user.length === 0) {
       res.status(404).json({ message: 'User not found.' });
     } else {
-      res.status(200).json({ user });
+      res.status(200).json(user[0]);
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -48,10 +49,65 @@ const getUserByIdHandler = async (req, res) => {
 
 const updateUserDataHandler = async (req, res) => {
   try {
+    const { email, user_id, name, surname, birthdate, role } = req.body;
     const id = req.params.id;
-    const data = req.body;
-    await updateUserData(id, data);
-    res.status(200).json({ id, data });
+
+    if (id != user_id) {
+      res.status(403).json({ error: `You are not allowed to change another user's data.` });
+      return;
+    }
+
+    if (!email) {
+      res.status(400).json({ error: 'Email is required.' });
+      return;
+    }
+
+    if (!/^[a-zA-Z]+@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)) {
+      res.status(400).json({ error: 'Email is invalid.' });
+      return;
+    }
+
+    if (role === 'player') {
+      if (!name || !surname || !birthdate) {
+        res.status(400).json({ error: 'All fields are required.' });
+        return;
+      }
+
+      if (name.length < 3 || name.length > 255) {
+        res.status(400).json({ error: 'Name must be between 3 and 255 characters long.' });
+        return;
+      }
+
+      if (/\s/.test(name)) {
+        res.status(400).json({ error: 'Name cannot contain spaces.' });
+        return;
+      }
+
+      if (surname.length < 3 || surname.length > 255) {
+        res.status(400).json({ error: 'Surname must be between 3 and 255 characters long.' });
+        return;
+      }
+
+      if (/\s/.test(surname)) {
+        res.status(400).json({ error: 'Surname cannot contain spaces.' });
+        return;
+      }
+
+      const birthdateObj = new Date(birthdate);
+
+      if (birthdateObj > new Date()) {
+        res.status(400).json({ error: 'Birthdate cannot be in the future.' });
+        return;
+      }
+
+      if (new Date() - birthdateObj < 24 * 60 * 60 * 1000 * 365 * 16) {
+        res.status(400).json({ error: 'You must be at least 16 years old to register.' });
+        return;
+      }
+    }
+
+    await updateUserData(id, email, name, surname, birthdate);
+    res.status(200).json({ message: 'User data updated.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -48,16 +48,16 @@ const getUserById = (id) => {
   });
 };
 
-const updateUserData = (id, data) => {
+const updateUserData = (id, email, name, surname, birthdate) => {
   return new Promise((resolve, reject) => {
     const updateUserDataQuery = 'UPDATE users SET email = ? WHERE id = ?';
-    connection.query(updateUserDataQuery, [data.email, id], (error, result) => {
+    connection.query(updateUserDataQuery, [email, id], (error, result) => {
       if (error) {
         reject(error);
       }
       
       const updatePlayerDataQuery = 'UPDATE players SET name = ?, surname = ?, birthdate = ? WHERE id = ?';
-      connection.query(updatePlayerDataQuery, [data.name, data.surname, data.birthdate, id], (error, result) => {
+      connection.query(updatePlayerDataQuery, [name, surname, birthdate, id], (error, result) => {
         if (error) {
           reject(error);
         }
