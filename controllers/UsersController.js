@@ -58,16 +58,47 @@ const updateUserDataHandler = async (req, res) => {
 };
 
 const updatePasswordHandler = async (req, res) => {
-  const id = req.params.id;
-  const { oldPassword, newPassword } = req.body;
   try {
-    const user = await checkCredentialsById(id, oldPassword);
-    if (user.length === 0) {
-      res.status(401).json({ message: 'Old password is incorrect.' });
-    } else {
-      await updatePassword(id, newPassword);
-      res.status(200).json({ message: 'Password updated.' });
+    const { old_password, new_password, repeat_new_password, user_id } = req.body;
+
+    if (!old_password || !new_password || !repeat_new_password) {
+      res.status(400).json({ error: 'All fields are required.' });
+      return;
     }
+
+    const user = await checkCredentialsById(user_id, old_password);
+    if (user.length === 0) {
+      res.status(401).json({ error: 'Old password is incorrect.' });
+      return;
+    }
+
+    if (/\s/.test(new_password)) {
+      res.status(400).json({ error: 'Password cannot contain spaces.' });
+      return;
+    }
+
+    if (new_password.length < 8) {
+      res.status(400).json({ error: 'Password must be at least 8 characters long.' });
+      return;
+    }
+
+    if (!/\d/.test(new_password)) {
+      res.status(400).json({ error: 'Password must contain a digit.' });
+      return;
+    }
+
+    if (!/[!@#$%]/.test(new_password)) {
+      res.status(400).json({ error: 'Password must contain a special character (!, @, #, $, %).' });
+      return;
+    }
+
+    if (new_password !== repeat_new_password) {
+      res.status(400).json({ error: 'Passwords do not match.' });
+      return;
+    }
+
+    await updatePassword(user_id, new_password);
+    res.status(200).json({ message: 'Password updated.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
