@@ -60,6 +60,12 @@ const updateUserDataHandler = async (req, res) => {
 const updatePasswordHandler = async (req, res) => {
   try {
     const { old_password, new_password, repeat_new_password, user_id } = req.body;
+    const id = req.params.id;
+
+    if (id !== user_id) {
+      res.status(403).json({ error: `You are not allowed to change another user's password.` });
+      return;
+    }
 
     if (!old_password || !new_password || !repeat_new_password) {
       res.status(400).json({ error: 'All fields are required.' });
@@ -106,7 +112,14 @@ const updatePasswordHandler = async (req, res) => {
 
 const deleteUserHandler = async (req, res) => {
   try {
+    const user_id = req.body.user_id;
     const id = req.params.id;
+
+    if (id != user_id) {
+      res.status(403).json({ error: `You are not allowed to delete another user's account.` });
+      return;
+    }
+
     await deleteUser(id);
     res.status(200).json({ message: 'User deleted.' });
   } catch (error) {

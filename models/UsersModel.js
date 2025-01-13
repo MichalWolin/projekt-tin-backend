@@ -92,20 +92,34 @@ const updatePassword = (id, password) => {
 };
 
 const deleteUser = (id) => {
-  //TODO: Nalezy usuwac powiazane turnieje przed usunieciem uzytkownika
   return new Promise((resolve, reject) => {
-    const deletePlayerQuery = 'DELETE FROM players WHERE id = ?';
-    connection.query(deletePlayerQuery, [id], (error, result) => {
+    const deletePlayersMatchesQuery = 'DELETE FROM matches WHERE player_1_id = ? OR player_2_id = ?';
+    const deleteUsersTourneysQuery = 'DELETE FROM tournaments WHERE manager_id = ?';
+    const deletePlayer = 'DELETE FROM players WHERE id = ?';
+    const deleteUser = 'DELETE FROM users WHERE id = ?';
+
+    connection.query(deletePlayersMatchesQuery, [id, id], (error, result) => {
       if (error) {
         reject(error);
       }
-      
-      const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
-      connection.query(deleteUserQuery, [id], (error, result) => {
+
+      connection.query(deleteUsersTourneysQuery, [id], (error, result) => {
         if (error) {
           reject(error);
         }
-        resolve(result);
+
+        connection.query(deletePlayer, [id], (error, result) => {
+          if (error) {
+            reject(error);
+          }
+
+          connection.query(deleteUser, [id], (error, result) => {
+            if (error) {
+              reject(error);
+            }
+            resolve(result);
+          });
+        });
       });
     });
   });
