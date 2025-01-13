@@ -6,7 +6,8 @@ const {
   getUserByIdHandler,
   updateUserDataHandler,
   updatePasswordHandler,
-  deleteUserHandler
+  deleteUserHandler,
+  get
 } = require('../controllers/UsersController');
 
 router.post('/register', registerNewUserHandler);

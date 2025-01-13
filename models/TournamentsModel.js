@@ -41,7 +41,6 @@ const addTournament = (tournament_name, start_date, end_date, manager_id, gender
 
 const removeTournament = (id) => {
   return new Promise((resolve, reject) => {
-    //Pytania: Czy powinienem sprawdzać czy turniej istnieje?
     const removeTournamentsMatchesQuery = 'DELETE FROM matches WHERE tournament_id = ?';
     connection.query(removeTournamentsMatchesQuery, [id], (error, result) => {
       if (error) {

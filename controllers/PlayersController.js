@@ -1,6 +1,8 @@
 const {
   getPlayerById,
-  getEligiblePlayers
+  getEligiblePlayers,
+  getRanking,
+  getPlayersMatches
 } = require('../models/PlayersModel');
 
 const getPlayerByIdHandler = async (req, res) => {
@@ -33,7 +35,30 @@ const getEligiblePlayersHandler = async (req, res) => {
   }
 };
 
+const getRankingHandler = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const data = await getRanking(page);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getPlayersMatchesHandler = async (req, res) => {
+  try {
+    const playerId = req.params.id;
+    const page = req.query.page || 1;
+    const matches = await getPlayersMatches(playerId, page);
+    res.status(200).json(matches);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getPlayerByIdHandler,
-  getEligiblePlayersHandler
+  getEligiblePlayersHandler,
+  getRankingHandler,
+  getPlayersMatchesHandler
 };
